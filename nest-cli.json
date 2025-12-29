@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/montesdeoca-ramos-defreitas-tep-sistema-ferias-gastronomicas/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/montesdeoca-ramos-defreitas-tep-sistema-ferias-gastronomicas/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/montesdeoca-ramos-defreitas-tep-sistema-ferias-gastronomicas",
+  "projects": {
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+      }
+    },
+    "montesdeoca-ramos-defreitas-tep-sistema-ferias-gastronomicas": {
+      "type": "application",
+      "root": "apps/montesdeoca-ramos-defreitas-tep-sistema-ferias-gastronomicas",
+      "entryFile": "main",
+      "sourceRoot": "apps/montesdeoca-ramos-defreitas-tep-sistema-ferias-gastronomicas/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/montesdeoca-ramos-defreitas-tep-sistema-ferias-gastronomicas/tsconfig.app.json"
+      }
+    },
+    "orders-service": {
+      "type": "application",
+      "root": "apps/orders-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/orders-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/orders-service/tsconfig.app.json"
+      }
+    },
+    "products-service": {
+      "type": "application",
+      "root": "apps/products-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/products-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/products-service/tsconfig.app.json"
+      }
+    },
+    "stands-service": {
+      "type": "application",
+      "root": "apps/stands-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/stands-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/stands-service/tsconfig.app.json"
+      }
+    },
+    "users-service": {
+      "type": "application",
+      "root": "apps/users-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/users-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/users-service/tsconfig.app.json"
+      }
+    }
+  }
+}
