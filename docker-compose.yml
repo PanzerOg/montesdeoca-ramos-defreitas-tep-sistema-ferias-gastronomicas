@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # Base de datos para el Microservicio de Usuarios
+  users-db:
+    image: postgres:15-alpine
+    container_name: tep_users_db
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: users_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - users_pgdata:/var/lib/postgresql/data
+
+  # Base de datos para el Microservicio de Puestos
+  stands-db:
+    image: postgres:15-alpine
+    container_name: tep_stands_db
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: stands_db
+    ports:
+      - '5433:5432' # OJO: Mapeamos el 5433 de tu PC al 5432 del contenedor
+    volumes:
+      - stands_pgdata:/var/lib/postgresql/data
+
+  # Base de datos para el Microservicio de Productos
+  products-db:
+    image: postgres:15-alpine
+    container_name: tep_products_db
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: products_db
+    ports:
+      - '5434:5432' # Puerto 5434
+    volumes:
+      - products_pgdata:/var/lib/postgresql/data
+
+  # Base de datos para el Microservicio de Pedidos
+  orders-db:
+    image: postgres:15-alpine
+    container_name: tep_orders_db
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: orders_db
+    ports:
+      - '5435:5432' # Puerto 5435
+    volumes:
+      - orders_pgdata:/var/lib/postgresql/data
+
+volumes:
+  users_pgdata:
+  stands_pgdata:
+  products_pgdata:
+  orders_pgdata:
