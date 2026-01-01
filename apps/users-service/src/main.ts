@@ -1,8 +1,13 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { UsersServiceModule } from './users-service.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(UsersServiceModule);
-  await app.listen(process.env.port ?? 3000);
+
+  app.useGlobalPipes(new ValidationPipe());
+
+  await app.listen(process.env.PORT ?? 3001);
+  console.log('Users Service corriendo en: http://localhost:3001');
 }
 bootstrap();
