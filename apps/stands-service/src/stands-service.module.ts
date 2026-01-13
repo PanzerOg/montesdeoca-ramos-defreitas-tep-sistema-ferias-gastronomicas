@@ -13,7 +13,7 @@ import { JwtStrategy } from './auth/jwt.strategy';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
-      port: 5434,
+      port: 5433,
       username: 'root',
       password: 'password123',
       database: 'stands_db',
