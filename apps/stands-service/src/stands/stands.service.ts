@@ -57,7 +57,13 @@ export class StandsService {
       );
     }
 
-    this.standRepository.merge(stand, updateStandDto);
+    const { status, ...restData } = updateStandDto;
+
+    this.standRepository.merge(stand, restData);
+
+    if (status) {
+       stand.status = status as any; 
+    }
     return await this.standRepository.save(stand);
   }
 
