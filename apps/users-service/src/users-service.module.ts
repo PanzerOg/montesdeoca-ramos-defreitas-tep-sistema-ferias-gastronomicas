@@ -17,9 +17,9 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
-      port: 5432, // Puerto del contenedor users-db
-      username: 'root', // Usuario definido en docker-compose
-      password: 'password123', // Contraseña definida en docker-compose
+      port: 5433, // Puerto del contenedor users-db
+      username: 'postgres', // Usuario definido en docker-compose
+      password: 'postgres', // Contraseña definida en docker-compose
       database: 'users_db', // Nombre de la BD
       autoLoadEntities: true, // Carga automatica de entidades
       synchronize: true,

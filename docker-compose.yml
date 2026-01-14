@@ -7,13 +7,13 @@ services:
     container_name: tep_users_db
     restart: always
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: password123
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: users_db
     ports:
       - '5433:5432'
     volumes:
-      - users_pgdata:/var/lib/postgresql/data
+      - users_pgdata_v3:/var/lib/postgresql/data
 
   # Base de datos para el Microservicio de Puestos
   stands-db:
@@ -58,7 +58,7 @@ services:
       - orders_pgdata:/var/lib/postgresql/data
 
 volumes:
-  users_pgdata:
+  users_pgdata_v3:
   stands_pgdata:
   products_pgdata:
   orders_pgdata:

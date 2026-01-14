@@ -6,6 +6,7 @@ import {
   UseGuards,
   Request,
 } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices'; // <--- Importante para TCP
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -30,7 +31,11 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  // --- ENDPOINT PROTEGIDO DE PRUEBA ---
+  @MessagePattern({ cmd: 'create_user' })
+  createTCP(@Payload() data: CreateUserDto) {
+    return this.usersService.create(data);
+  }
+
   @Get('profile')
   @UseGuards(AuthGuard('jwt'), RolesGuard) // 1. Valida Token, 2. Valida Rol
   @Roles(UserRole.CLIENT, UserRole.ENTREPRENEUR, UserRole.ORGANIZER) // Permite a todos los roles logueados
