@@ -33,6 +33,10 @@ export class StandsController {
     @Body() createStandDto: CreateStandDto,
     @Request() req: RequestWithUser,
   ) {
+    if (req.user.role !== 'entrepreneur') {
+      throw new ForbiddenException('Solo los emprendedores pueden crear puestos');
+    }
+
     return this.standsService.create(createStandDto, req.user);
   }
 
