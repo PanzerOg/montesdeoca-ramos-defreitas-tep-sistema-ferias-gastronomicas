@@ -9,21 +9,26 @@ import {
   ForbiddenException,
   Request,
 } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices'; // <--- Importante para TCP
+import { Request as ExpressRequest } from 'express';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { UserRole } from './entities/user.entity';
+import { UserRole, User } from './entities/user.entity';
 
-interface RequestWithUser {
-  user: {
-    sub: string;
-    email: string;
-    role: string;
-  };
+interface UserPayload {
+  sub: string;
+  email: string;
+  role: string;
+  id?: string;
+  userId?: string;
+}
+
+interface RequestWithUser extends ExpressRequest {
+  user: UserPayload;
 }
 
 @Controller('users')
@@ -50,29 +55,30 @@ export class UsersController {
     };
   }
 
-
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  update(
-    @Param('id') id: string, 
-    @Body() updateUserDto: UpdateUserDto, 
-    @Request() req: any 
-  ) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Request() req: RequestWithUser,
+  ): Promise<User> {
     console.log('--- DEBUG UPDATE USER ---');
     console.log('ID en URL:', id);
     console.log('Usuario en Request:', req.user);
 
     const user = req.user;
-    const requestingUserId = user.id || user.userId || user.sub; 
-
-    console.log('ID extraído del Token:', requestingUserId);
-    console.log('¿Coinciden?', requestingUserId === id);
-    console.log('-------------------------');
+    const requestingUserId = user.id || user.userId || user.sub;
 
     if (requestingUserId !== id && user.role !== 'organizer') {
       throw new ForbiddenException('No tienes permiso para editar este perfil');
     }
 
-    return this.usersService.update(id, updateUserDto);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    const updatedUser = (await this.usersService.update(
+      id,
+      updateUserDto,
+    )) as User;
+
+    return updatedUser;
   }
 }
