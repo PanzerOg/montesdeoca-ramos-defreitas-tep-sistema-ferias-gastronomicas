@@ -81,4 +81,40 @@ export class OrdersService {
   findOne(id: string) {
     return this.orderRepository.findOne({ where: { id }, relations: ['items'] });
   }
+
+  async getStatistics() {
+    const totalSales = await this.orderRepository
+      .createQueryBuilder('order')
+      .select('SUM(order.total)', 'revenue')
+      .addSelect('COUNT(order.id)', 'count')
+      .where('order.status = :status', { status: 'entregado' })
+      .getRawOne();
+
+    const topProducts = await this.orderRepository
+        .createQueryBuilder('order')
+        .leftJoinAndSelect('order.items', 'item')
+        .select('item.productId', 'productId')
+        .addSelect('SUM(item.quantity)', 'totalSold')
+        .groupBy('item.productId')
+        .orderBy('"totalSold"', 'DESC') 
+        .limit(3)
+        .getRawMany();
+
+    const salesByDay = await this.orderRepository
+      .createQueryBuilder('order')
+      .select("TO_CHAR(order.createdAt, 'YYYY-MM-DD')", 'date')
+      .addSelect('SUM(order.total)', 'dailyRevenue')
+      .where('order.status = :status', { status: 'entregado' })
+      .groupBy('date')
+      .orderBy('date', 'ASC')
+      .limit(7)
+      .getRawMany();
+
+    return {
+      revenue: totalSales && totalSales.revenue ? parseFloat(totalSales.revenue) : 0,
+      completedOrders: totalSales && totalSales.count ? parseInt(totalSales.count, 10) : 0,
+      topProducts: topProducts.map(p => ({ productId: p.productId, totalSold: parseInt(p.totalSold, 10) })),
+      salesByDay
+    };
+  }
 }

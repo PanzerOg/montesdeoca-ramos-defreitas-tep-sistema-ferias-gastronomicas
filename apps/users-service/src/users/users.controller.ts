@@ -4,10 +4,14 @@ import {
   Body,
   Get,
   UseGuards,
+  Patch,
+  Param,
+  ForbiddenException,
   Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -30,14 +34,39 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  // --- ENDPOINT PROTEGIDO DE PRUEBA ---
   @Get('profile')
-  @UseGuards(AuthGuard('jwt'), RolesGuard) // 1. Valida Token, 2. Valida Rol
-  @Roles(UserRole.CLIENT, UserRole.ENTREPRENEUR, UserRole.ORGANIZER) // Permite a todos los roles logueados
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.CLIENT, UserRole.ENTREPRENEUR, UserRole.ORGANIZER)
   getProfile(@Request() req: RequestWithUser) {
     return {
       message: 'Acceso autorizado',
-      user_data: req.user, // Aquí vienen los datos del token decodificado
+      user_data: req.user,
     };
+  }
+
+
+  @Patch(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  update(
+    @Param('id') id: string, 
+    @Body() updateUserDto: UpdateUserDto, 
+    @Request() req: any 
+  ) {
+    console.log('--- DEBUG UPDATE USER ---');
+    console.log('ID en URL:', id);
+    console.log('Usuario en Request:', req.user);
+
+    const user = req.user;
+    const requestingUserId = user.id || user.userId || user.sub; 
+
+    console.log('ID extraído del Token:', requestingUserId);
+    console.log('¿Coinciden?', requestingUserId === id);
+    console.log('-------------------------');
+
+    if (requestingUserId !== id && user.role !== 'organizer') {
+      throw new ForbiddenException('No tienes permiso para editar este perfil');
+    }
+
+    return this.usersService.update(id, updateUserDto);
   }
 }

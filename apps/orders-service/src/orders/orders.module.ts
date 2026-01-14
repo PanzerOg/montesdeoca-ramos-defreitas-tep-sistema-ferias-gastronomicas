@@ -13,7 +13,7 @@ import { OrderItem } from './entities/order-item.entity';
       {
         name: 'PRODUCTS_SERVICE',
         transport: Transport.TCP,
-        options: { host: 'localhost', port: 3003 }, 
+        options: { host: 'localhost', port: 3006 },
       },
     ]),
     ClientsModule.register([

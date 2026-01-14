@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException, Inject, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, Like, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
+import { Repository, Between, Like, MoreThanOrEqual, LessThanOrEqual, MoreThan } from 'typeorm';
 import { lastValueFrom } from 'rxjs';
 import { In } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -36,7 +36,12 @@ export class ProductsService {
 
   async findAll(filters: FilterProductDto) {
     const { category, standId, minPrice, maxPrice, search } = filters;
-    const where: any = { isActive: true };
+
+    const where: any = { 
+      isActive: true,
+      stock: MoreThan(0) 
+    };
+
     if (category) where.category = category;
     if (standId) where.standId = standId;
     
