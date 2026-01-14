@@ -9,6 +9,7 @@ import {
   ForbiddenException,
   Request,
 } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices'; // <--- Importante para TCP
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -32,6 +33,11 @@ export class UsersController {
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
+  }
+
+  @MessagePattern({ cmd: 'create_user' })
+  createTCP(@Payload() data: CreateUserDto) {
+    return this.usersService.create(data);
   }
 
   @Get('profile')
